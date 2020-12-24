@@ -20,7 +20,7 @@ public class RepeatRunner extends BlockJUnit4ClassRunner {
 
 	@Override
 	public Description describeChild(FrameworkMethod method) {
-		if (isSkipRepeatTest(method)) {
+		if (isSkipRepeat(method)) {
 			return super.describeChild(method);
 		}
 
@@ -37,24 +37,27 @@ public class RepeatRunner extends BlockJUnit4ClassRunner {
 		return description;
 	}
 
-	private boolean isSkipRepeatTest(FrameworkMethod method) {
+	private boolean isSkipRepeat(FrameworkMethod method) {
 		return isIgnored(method) || Objects.isNull(method.getAnnotation(Repeat.class));
 	}
 
 	private Description generateChildDescription(FrameworkMethod method, int currentRepetition) {
 		return Description.createTestDescription(getTestClass().getJavaClass(),
-			method.getName() + "[" + currentRepetition + "]");
+			makeChildDisplayName(method, currentRepetition));
+	}
+
+	private String makeChildDisplayName(FrameworkMethod method, int currentRepetition) {
+		return method.getName() + "[" + currentRepetition + "]";
 	}
 
 	@Override
 	protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
-		Description description = describeChild(method);
-		if (isSkipRepeatTest(method)) {
+		if (isSkipRepeat(method)) {
 			super.runChild(method, notifier);
 			return;
 		}
 
-		description.getChildren()
+		describeChild(method).getChildren()
 			.forEach(childDesc -> runLeaf(methodBlock(method), childDesc, notifier));
 	}
 }
