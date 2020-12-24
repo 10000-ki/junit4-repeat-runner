@@ -26,14 +26,14 @@ public class MyTestClass {
 	}
 
 	@Test
-	public void notUsingRepeat() {
+	public void testNotUsingRepeat() {
 
 	}
 
 	@Ignore
 	@Test
 	@Repeat(10)
-	public void checkIgnore() {
+	public void testCheckIgnore() {
 
 	}
 }
